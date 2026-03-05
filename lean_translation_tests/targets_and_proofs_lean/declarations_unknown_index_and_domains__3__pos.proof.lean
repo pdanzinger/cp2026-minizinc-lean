@@ -1,0 +1,187 @@
+
+import Mathlib
+set_option maxHeartbeats 0
+open BigOperators Real Nat Topology Rat
+
+
+-- These lines work to assume that every Prop is decidable. I.e. if p : Prop, then (decide p) will always work
+open Classical
+noncomputable section
+classical
+
+
+
+-- MiniZinc Array Types. Represents MiniZinc arrays of dimensions 1 through 8 in Lean.
+-- The array contents are modelled by toFun, dom0 through domN are the array boundaries. Boundaries for accesses are enforced through safety formulas.
+
+universe u
+
+/-- Helper: product of a list of Nats. -/
+def listProd : List Nat → Nat := List.foldl (· * ·) 1
+
+/-- Nonempty contiguous finite integer set. -/
+def mzIsContiguousIntSet (s : Finset Int) : Prop :=
+    0 < s.card ∧ Int.ofNat s.card = (s.max.getD 0 - s.min.getD 0 + 1)
+
+/-- 1D array with element type α. -/
+structure Array1d (α : Type u) where
+    dom0  : Finset Int
+    toFun : Int → α
+
+/-- 2D array with element type α. -/
+structure Array2d (α : Type u) where
+    dom0  : Finset Int
+    dom1  : Finset Int
+    toFun : Int → Int → α
+
+/-- 3D array with element type α. -/
+structure Array3d (α : Type u) where
+    dom0  : Finset Int
+    dom1  : Finset Int
+    dom2  : Finset Int
+    toFun : Int → Int → Int → α
+
+/-- 4D array with element type α. -/
+structure Array4d (α : Type u) where
+    dom0  : Finset Int
+    dom1  : Finset Int
+    dom2  : Finset Int
+    dom3  : Finset Int
+    toFun : Int → Int → Int → Int → α
+
+/-- 5D array with element type α. -/
+structure Array5d (α : Type u) where
+    dom0  : Finset Int
+    dom1  : Finset Int
+    dom2  : Finset Int
+    dom3  : Finset Int
+    dom4  : Finset Int
+    toFun : Int → Int → Int → Int → Int → α
+
+/-- 6D array with element type α. -/
+structure Array6d (α : Type u) where
+    dom0  : Finset Int
+    dom1  : Finset Int
+    dom2  : Finset Int
+    dom3  : Finset Int
+    dom4  : Finset Int
+    dom5  : Finset Int
+    toFun : Int → Int → Int → Int → Int → Int → α
+
+/-- 7D array with element type α. -/
+structure Array7d (α : Type u) where
+    dom0  : Finset Int
+    dom1  : Finset Int
+    dom2  : Finset Int
+    dom3  : Finset Int
+    dom4  : Finset Int
+    dom5  : Finset Int
+    dom6  : Finset Int
+    toFun : Int → Int → Int → Int → Int → Int → Int → α
+
+/-- 8D array with element type α. -/
+structure Array8d (α : Type u) where
+    dom0  : Finset Int
+    dom1  : Finset Int
+    dom2  : Finset Int
+    dom3  : Finset Int
+    dom4  : Finset Int
+    dom5  : Finset Int
+    dom6  : Finset Int
+    dom7  : Finset Int
+    toFun : Int → Int → Int → Int → Int → Int → Int → Int → α
+
+namespace Array1d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array1d α) : Nat :=
+    listProd [a.dom0.card]
+
+end Array1d
+
+namespace Array2d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array2d α) : Nat :=
+    listProd [a.dom0.card, a.dom1.card]
+
+end Array2d
+
+namespace Array3d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array3d α) : Nat :=
+    listProd [a.dom0.card, a.dom1.card, a.dom2.card]
+
+end Array3d
+
+namespace Array4d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array4d α) : Nat :=
+    listProd [a.dom0.card, a.dom1.card, a.dom2.card, a.dom3.card]
+
+end Array4d
+
+namespace Array5d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array5d α) : Nat :=
+    listProd [a.dom0.card, a.dom1.card, a.dom2.card, a.dom3.card, a.dom4.card]
+
+end Array5d
+
+namespace Array6d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array6d α) : Nat :=
+    listProd [a.dom0.card, a.dom1.card, a.dom2.card, a.dom3.card, a.dom4.card, a.dom5.card]
+
+end Array6d
+
+namespace Array7d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array7d α) : Nat :=
+    listProd [a.dom0.card, a.dom1.card, a.dom2.card, a.dom3.card, a.dom4.card, a.dom5.card, a.dom6.card]
+
+end Array7d
+
+namespace Array8d
+
+/-- MiniZinc `length`: total number of elements in the array. -/
+def size (a : Array8d α) : Nat :=
+    listProd [a.dom0.card, a.dom1.card, a.dom2.card, a.dom3.card, a.dom4.card, a.dom5.card, a.dom6.card, a.dom7.card]
+
+end Array8d
+
+-- Other definitions:
+
+def mz_bool2int (b : Prop) : Int := if b then (1 : Int) else (0 : Int)
+
+-- The compiled MiniZinc model with the constraints to prove:
+
+structure Model where
+  var_a : Int
+  var_X : (Finset Int)
+  var_U : (Array1d Int)
+
+def cons₀ (m₀ : Model) : Prop := (m₀.var_a ∈ (Finset.Icc 0 10)) ∧ m₀.var_a = 5
+def cons₁ (m₀ : Model) : Prop := (m₀.var_X ⊆ (Finset.Icc 1 4)) ∧ m₀.var_X = ({1, 4} : Finset Int)
+def cons₂ (m₀ : Model) : Prop := (∀ _i₂ ∈ m₀.var_U.dom0, (m₀.var_U.toFun _i₂) ∈ (Finset.Icc 0 1))
+def cons₃ (m₀ : Model) : Prop := ((∑ _i₃ ∈ (m₀.var_U.dom0), (m₀.var_U.toFun (_i₃) )) >= 0)
+
+theorem theorem_redundant (m₀: Model) (h₀: cons₀ m₀) (h₁: cons₁ m₀) (h₂: cons₂ m₀) : (cons₃ m₀) := by
+  
+  -- unfold the goal
+  unfold cons₃
+  -- prove each summand is non‑negative
+  have hnonneg : ∀ i ∈ m₀.var_U.dom0, (0 : Int) ≤ m₀.var_U.toFun i := by
+    intro i hi
+    have hmem := h₂ i hi
+    have hbounds := (Finset.mem_Icc).1 hmem
+    exact hbounds.1
+  -- sum of non‑negative integers is non‑negative
+  have hsum : (0 : Int) ≤ ∑ i in m₀.var_U.dom0, m₀.var_U.toFun i :=
+    Finset.sum_nonneg hnonneg
+  simpa [ge_iff_le] using hsum

@@ -1,0 +1,9 @@
+annotation redundant;
+annotation nonredundant;
+
+var 0..10: a = 5;
+var set of 1..4: X = {1, 4};
+array[int] of var 0..1: U;constraint (not (((a = 5) /\ (0 <= a /\ a <= 10))));
+
+
+solve satisfy;

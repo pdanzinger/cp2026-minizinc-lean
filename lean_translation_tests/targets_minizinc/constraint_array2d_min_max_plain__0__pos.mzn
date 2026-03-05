@@ -1,0 +1,9 @@
+annotation redundant;
+annotation nonredundant;
+
+array[1..2, 1..2] of var int: A;
+
+constraint forall(i in 1..2, j in 1..2)(A[i, j] = i + j);constraint (not (((min(A) = 2) /\ (max(A) = 4))));
+
+
+solve satisfy;

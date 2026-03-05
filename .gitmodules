@@ -1,0 +1,3 @@
+[submodule "mzn-to-lean/libminizinc"]
+	path = mzn-to-lean/libminizinc
+	url = https://github.com/MiniZinc/libminizinc.git
