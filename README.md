@@ -110,3 +110,32 @@ python -m python.minizinc_benchmark_main \
     /path/to/original.mzn \
     /path/to/out_dir/final_model.mzn
 ```
+
+
+## Citation
+
+If you use this software artifact, please cite the associated paper:
+
+Philipp Danzinger and Nysret Musliu. From LLM Suggestions to Lean Proofs:
+Verified Redundant Constraints for MiniZinc. To appear in the 32nd
+International Conference on Principles and Practice of Constraint Programming
+(CP 2026), LIPIcs, Vol. 379, Article 53, 2026.
+https://doi.org/10.4230/LIPIcs.CP.2026.53
+
+```bibtex
+@inproceedings{DanzingerMusliu2026VerifiedRedundantConstraints,
+  author    = {Philipp Danzinger and Nysret Musliu},
+  title     = {From LLM Suggestions to Lean Proofs: Verified Redundant Constraints for MiniZinc},
+  booktitle = {32nd International Conference on Principles and Practice of Constraint Programming (CP 2026)},
+  series    = {Leibniz International Proceedings in Informatics (LIPIcs)},
+  volume    = {379},
+  articleno = {53},
+  year      = {2026},
+  publisher = {Schloss Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik},
+  doi       = {10.4230/LIPIcs.CP.2026.53}
+}
+```
+
+## License
+
+This software is released under the MIT License. See `LICENSE`.
